@@ -8,5 +8,6 @@ edition = "2021"
 wasm-bindgen = { version = "=0.2.73", features = ["serde-serialize"] }
 serde = { version = "1.0.124", features = ["derive"] }
 noah  = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.3.2" } 
+noah-crypto = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.3.2" }
 noah-algebra  = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.3.2" }
 ed25519-dalek = { git = "https://github.com/FindoraNetwork/ed25519-dalek", tag = "v1.0.1-f" }

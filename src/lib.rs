@@ -10,3 +10,5 @@ mod blindassetrecord;
 pub use blindassetrecord::*;
 mod xfrbody;
 pub use xfrbody::*;
+mod ownermemo;
+pub use ownermemo::*;

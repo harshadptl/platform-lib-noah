@@ -1,6 +1,6 @@
 use {
-    crate::BlindAssetRecord,
-    noah::xfr::structs::{OwnerMemo, TracerMemo, XfrBody as NoahXfrBody, XfrProofs},
+    crate::{BlindAssetRecord, OwnerMemo},
+    noah::xfr::structs::{TracerMemo, XfrBody as NoahXfrBody, XfrProofs},
     noah_algebra::prelude::*,
     serde::{Deserialize, Serialize},
 };
@@ -33,7 +33,11 @@ impl XfrBody {
                 .collect(),
             proofs: self.proofs.clone(),
             asset_tracing_memos: self.asset_tracing_memos.clone(),
-            owners_memos: self.owners_memos.clone(),
+            owners_memos: self
+                .owners_memos
+                .iter()
+                .map(|it| it.clone().map(|om| om.into_noah()))
+                .collect(),
         })
     }
 
@@ -51,7 +55,11 @@ impl XfrBody {
                 .collect(),
             proofs: value.proofs.clone(),
             asset_tracing_memos: value.asset_tracing_memos.clone(),
-            owners_memos: value.owners_memos.clone(),
+            owners_memos: value
+                .owners_memos
+                .iter()
+                .map(|it| it.clone().map(|om| OwnerMemo::from_noah(&om).unwrap()))
+                .collect(),
         })
     }
 }
