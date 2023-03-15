@@ -1,7 +1,6 @@
-use ed25519_dalek::{PublicKey, SecretKey};
-
 use {
     crate::{publickey::XfrPublicKey, secretkey::XfrSecretKey, signature::XfrSignature},
+    ed25519_dalek::{PublicKey, SecretKey},
     noah::xfr::sig::XfrKeyPair as NoahXfrKeyPair,
     noah_algebra::prelude::*,
     serde::{Deserialize, Serialize},
@@ -27,7 +26,7 @@ impl XfrKeyPair {
         self.sec_key.clone().into_noah().map(|sk| sk.into_keypair())
     }
 
-    pub fn from_noah(value: &NoahXfrKeyPair) -> Result<XfrKeyPair> {
+    pub fn from_noah(value: &NoahXfrKeyPair) -> Result<Self> {
         XfrSecretKey::from_noah(value.get_sk_ref()).map(|sk| sk.into_keypair())
     }
 

@@ -8,3 +8,5 @@ mod signature;
 pub use signature::*;
 mod blindassetrecord;
 pub use blindassetrecord::*;
+mod xfrbody;
+pub use xfrbody::*;

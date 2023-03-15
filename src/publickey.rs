@@ -43,7 +43,7 @@ impl XfrPublicKey {
         NoahXfrPublicKey::from_bytes(&bytes).map_err(|e| eg!(e))
     }
 
-    pub fn from_noah(value: &NoahXfrPublicKey) -> Result<XfrPublicKey> {
+    pub fn from_noah(value: &NoahXfrPublicKey) -> Result<Self> {
         if let XfrPublicKeyInner::Ed25519(v) = value.inner() {
             Ok(Self(v.clone()))
         } else {

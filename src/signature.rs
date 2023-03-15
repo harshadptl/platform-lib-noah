@@ -34,7 +34,7 @@ impl XfrSignature {
         NoahXfrSignature::from_bytes(&bytes).map_err(|e| eg!(e))
     }
 
-    pub fn from_noah(value: &NoahXfrSignature) -> Result<XfrSignature> {
+    pub fn from_noah(value: &NoahXfrSignature) -> Result<Self> {
         let bytes = value.to_bytes();
         XfrSignature::from_bytes(&bytes[1..XFR_SIGNATURE_LENGTH - 1])
     }
