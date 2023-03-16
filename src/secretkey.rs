@@ -50,7 +50,7 @@ impl XfrSecretKey {
     pub fn into_noah(&self) -> Result<NoahXfrSecretKey> {
         let mut bytes = [0u8; XFR_SECRET_KEY_LENGTH];
         bytes[0] = KeyType::Ed25519.to_byte();
-        bytes[1..XFR_SECRET_KEY_LENGTH - 1].copy_from_slice(self.0.as_bytes());
+        bytes[1..XFR_SECRET_KEY_LENGTH].copy_from_slice(self.0.as_bytes());
 
         NoahXfrSecretKey::from_bytes(&bytes).map_err(|e| eg!(e))
     }
