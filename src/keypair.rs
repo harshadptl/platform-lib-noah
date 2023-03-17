@@ -1,7 +1,7 @@
 use {
     crate::{publickey::XfrPublicKey, secretkey::XfrSecretKey, signature::XfrSignature},
     ed25519_dalek::{PublicKey, SecretKey},
-    noah::xfr::sig::XfrKeyPair as NoahXfrKeyPair,
+    noah::keys::KeyPair as NoahXfrKeyPair,
     noah_algebra::prelude::*,
     serde::{Deserialize, Serialize},
     wasm_bindgen::prelude::*,

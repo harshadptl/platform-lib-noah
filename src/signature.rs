@@ -2,7 +2,7 @@ use {
     ed25519_dalek::{Signature, SIGNATURE_LENGTH},
     noah::{
         errors::NoahError,
-        xfr::sig::{KeyType, XfrSignature as NoahXfrSignature, XFR_SIGNATURE_LENGTH},
+        keys::{Signature as NoahXfrSignature, SIGNATURE_LENGTH as NOAH_SIGNATURE_LENGTH},
     },
     noah_algebra::{prelude::*, serialization::NoahFromToBytes},
     serde::Serializer,
@@ -27,16 +27,12 @@ impl XfrSignature {
     }
 
     pub fn into_noah(&self) -> Result<NoahXfrSignature> {
-        let mut bytes = [0u8; XFR_SIGNATURE_LENGTH];
-        bytes[0] = KeyType::Ed25519.to_byte();
-        bytes[1..XFR_SIGNATURE_LENGTH - 1].copy_from_slice(&self.0.to_bytes());
-
-        NoahXfrSignature::from_bytes(&bytes).map_err(|e| eg!(e))
+        NoahXfrSignature::noah_from_bytes(&self.to_bytes()).map_err(|e| eg!(e))
     }
 
     pub fn from_noah(value: &NoahXfrSignature) -> Result<Self> {
-        let bytes = value.to_bytes();
-        XfrSignature::from_bytes(&bytes[1..XFR_SIGNATURE_LENGTH - 1])
+        let bytes = value.noah_to_bytes();
+        XfrSignature::from_bytes(&bytes[1..NOAH_SIGNATURE_LENGTH - 1])
     }
 }
 

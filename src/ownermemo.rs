@@ -1,6 +1,6 @@
 use {
     noah::ristretto::CompressedEdwardsY,
-    noah::xfr::{sig::KeyType, structs::OwnerMemo as NoahOwnerMemo},
+    noah::{keys::KeyType, xfr::structs::OwnerMemo as NoahOwnerMemo},
     noah_algebra::{prelude::*, serialization::NoahFromToBytes},
     noah_crypto::basic::hybrid_encryption::{Ctext, XPublicKey},
     serde::{Deserialize, Serialize},

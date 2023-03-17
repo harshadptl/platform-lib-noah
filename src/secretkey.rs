@@ -3,10 +3,7 @@ use {
     ed25519_dalek::{PublicKey, SecretKey, SECRET_KEY_LENGTH},
     noah::{
         errors::NoahError,
-        xfr::sig::{
-            KeyType, XfrSecretKey as NoahXfrSecretKey, XfrSignature as NoahXfrSignature,
-            XFR_SECRET_KEY_LENGTH,
-        },
+        keys::{SecretKey as NoahXfrSecretKey, Signature as NoahXfrSignature},
     },
     noah_algebra::{
         cmp::Ordering,
@@ -48,11 +45,7 @@ impl XfrSecretKey {
         }
     }
     pub fn into_noah(&self) -> Result<NoahXfrSecretKey> {
-        let mut bytes = [0u8; XFR_SECRET_KEY_LENGTH];
-        bytes[0] = KeyType::Ed25519.to_byte();
-        bytes[1..XFR_SECRET_KEY_LENGTH].copy_from_slice(self.0.as_bytes());
-
-        NoahXfrSecretKey::from_bytes(&bytes).map_err(|e| eg!(e))
+        NoahXfrSecretKey::noah_from_bytes(&self.to_bytes()).map_err(|e| eg!(e))
     }
 
     pub fn from_noah(value: &NoahXfrSecretKey) -> Result<Self> {

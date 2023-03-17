@@ -1,9 +1,7 @@
 use {
     crate::signature::XfrSignature,
     ed25519_dalek::{PublicKey, PUBLIC_KEY_LENGTH},
-    noah::xfr::sig::{
-        KeyType, XfrPublicKey as NoahXfrPublicKey, XfrPublicKeyInner, XFR_PUBLIC_KEY_LENGTH,
-    },
+    noah::keys::{PublicKey as NoahXfrPublicKey, PublicKeyInner},
     noah_algebra::{
         cmp::Ordering,
         hash::{Hash, Hasher},
@@ -36,15 +34,11 @@ impl XfrPublicKey {
     }
 
     pub fn into_noah(&self) -> Result<NoahXfrPublicKey> {
-        let mut bytes = [0u8; XFR_PUBLIC_KEY_LENGTH];
-        bytes[0] = KeyType::Ed25519.to_byte();
-        bytes[1..XFR_PUBLIC_KEY_LENGTH - 1].copy_from_slice(self.0.as_bytes());
-
-        NoahXfrPublicKey::from_bytes(&bytes).map_err(|e| eg!(e))
+        NoahXfrPublicKey::noah_from_bytes(&self.to_bytes()).map_err(|e| eg!(e))
     }
 
     pub fn from_noah(value: &NoahXfrPublicKey) -> Result<Self> {
-        if let XfrPublicKeyInner::Ed25519(v) = value.inner() {
+        if let PublicKeyInner::Ed25519(v) = value.inner() {
             Ok(Self(v.clone()))
         } else {
             Err(eg!("type error"))
