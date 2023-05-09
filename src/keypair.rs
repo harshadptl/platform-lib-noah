@@ -73,7 +73,7 @@ impl NoahFromToBytes for XfrKeyPair {
                 ),
             })
         } else {
-            Err(eg!("length must b 64"))
+            Err(eg!("length must be 64"))
         }
     }
 }
