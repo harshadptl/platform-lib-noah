@@ -12,6 +12,7 @@ noah-crypto = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.4.9-1"
 noah-algebra  = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.4.9-1" }
 noah-accumulators  = { git = "https://github.com/FindoraNetwork/noah", tag = "v0.4.9-1" }
 ed25519-dalek = { package = "noah-ed25519-dalek", version = "4.0.0" }
+rand_chacha = '0.3'
 
 [features]
 lightweight = [ "noah/lightweight" ] # Minimize size for only AR2ABAR and ABAR2AR.

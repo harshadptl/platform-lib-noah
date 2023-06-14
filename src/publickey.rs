@@ -1,9 +1,7 @@
 use {
     crate::signature::XfrSignature,
-    ed25519_dalek::{PublicKey, PUBLIC_KEY_LENGTH},
-    noah::keys::{PublicKey as NoahXfrPublicKey, PublicKeyInner},
+    noah::keys::PublicKey as NoahXfrPublicKey,
     noah_algebra::{
-        cmp::Ordering,
         hash::{Hash, Hasher},
         prelude::*,
         serialization::NoahFromToBytes,
@@ -12,72 +10,59 @@ use {
     wasm_bindgen::prelude::*,
 };
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 #[wasm_bindgen]
-pub struct XfrPublicKey(pub(crate) PublicKey);
+pub struct XfrPublicKey(pub(crate) NoahXfrPublicKey);
 
 serialize_deserialize!(XfrPublicKey);
 
 impl XfrPublicKey {
-    pub fn to_bytes(&self) -> [u8; PUBLIC_KEY_LENGTH] {
-        *self.0.as_bytes()
-    }
-
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
-        PublicKey::from_bytes(&bytes[0..PUBLIC_KEY_LENGTH])
-            .map(|pk| XfrPublicKey(pk))
-            .map_err(|e| eg!(e))
-    }
     pub fn verify(&self, message: &[u8], signature: &XfrSignature) -> Result<()> {
         let pk: NoahXfrPublicKey = self.clone().into_noah()?;
         pk.verify(message, &signature.into_noah()?)
     }
 
     pub fn into_noah(&self) -> Result<NoahXfrPublicKey> {
-        NoahXfrPublicKey::noah_from_bytes(&self.to_bytes()).map_err(|e| eg!(e))
+        Ok(self.0)
     }
 
     pub fn from_noah(value: &NoahXfrPublicKey) -> Result<Self> {
-        if let PublicKeyInner::Ed25519(v) = value.inner() {
-            Ok(Self(v.clone()))
-        } else {
-            Err(eg!("type error"))
-        }
+        Ok(XfrPublicKey(value.clone()))
     }
 }
 
 impl NoahFromToBytes for XfrPublicKey {
     fn noah_to_bytes(&self) -> Vec<u8> {
-        self.to_bytes().to_vec()
+        self.0.noah_to_bytes()
     }
 
     fn noah_from_bytes(bytes: &[u8]) -> Result<Self> {
-        Self::from_bytes(bytes)
-    }
-}
-
-impl Eq for XfrPublicKey {}
-
-impl PartialEq for XfrPublicKey {
-    fn eq(&self, other: &XfrPublicKey) -> bool {
-        self.to_bytes().eq(&other.to_bytes())
-    }
-}
-
-impl Ord for XfrPublicKey {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.to_bytes().cmp(&other.to_bytes())
-    }
-}
-
-impl PartialOrd for XfrPublicKey {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
+        let pk = NoahXfrPublicKey::noah_from_bytes(bytes)?;
+        Ok(XfrPublicKey(pk))
     }
 }
 
 impl Hash for XfrPublicKey {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.to_bytes().hash(state)
+        self.noah_to_bytes().hash(state)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ed25519_dalek::{PublicKey, SecretKey};
+    use rand_chacha::ChaChaRng;
+
+    #[test]
+    fn test_ed25519_keys() {
+        let mut prng = ChaChaRng::seed_from_u64(123);
+        let s = SecretKey::generate(&mut prng);
+        let p: PublicKey = (&s).into();
+
+        p.to_bytes();
+        let xpk = XfrPublicKey::noah_from_bytes(&p.to_bytes()).unwrap();
+
+        assert_eq!(p.to_bytes().to_vec(), xpk.noah_to_bytes())
     }
 }

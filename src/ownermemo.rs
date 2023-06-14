@@ -39,6 +39,13 @@ impl NoahFromToBytes for ZeiHybridCipher {
     }
 }
 impl OwnerMemo {
+    // ConfidentialAmount_ConfidentialAssetType Secp256k1 blind_share_bytes: 33 lock_bytes len: 89
+    // ConfidentialAmount_NonConfidentialAssetType Secp256k1 blind_share_bytes: 33 lock_bytes len: 57
+    // NonConfidentialAmount_ConfidentialAssetType Secp256k1 blind_share_bytes: 33 lock_bytes len: 81
+    //
+    // ConfidentialAmount_ConfidentialAssetType Ed25519 blind_share_bytes: 32 lock_bytes len: 72
+    // ConfidentialAmount_NonConfidentialAssetType Ed25519 blind_share_bytes: 32 lock_bytes len: 40
+    // NonConfidentialAmount_ConfidentialAssetType Ed25519 blind_share_bytes: 32 lock_bytes len: 64
     pub fn into_noah(&self) -> NoahOwnerMemo {
         NoahOwnerMemo {
             key_type: KeyType::Ed25519,
